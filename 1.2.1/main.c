@@ -26,11 +26,23 @@ int main(int argc, char* args[])
 		exit(0);
 	}
 
-	/* Execução */
-	SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0X00);
+	/* Definindo a cor do fundo da janela */
+	SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0x00);
 	SDL_RenderClear(renderer);
-	SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0xFF, 0X00);
-	SDL_Rect rectangle = {40,20, 10,10};
+
+	/* Criação do cabeça */
+	SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0x00, 0X00);
+	SDL_Rect rectangle = {175,20, 50,50};
 	SDL_RenderFillRect(renderer, &rectangle);
+
+	/* Criação do corpo */
+	SDL_SetRenderDrawColor(renderer, 0xFF, 0x00, 0x00, 0x00);
+	SDL_RenderDrawLine(renderer, 200,70, 200,135);
+
+	/* Criação do ponto */
+	SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0x00);
+	SDL_RenderDrawPoint(renderer, 200, 45);
+	
+	SDL_RenderPresent(renderer);
 	SDL_Delay(5000);
 }
