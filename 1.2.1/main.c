@@ -27,22 +27,40 @@ int main(int argc, char* args[])
 	}
 
 	/* Definindo a cor do fundo da janela */
-	SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0x00);
+	SDL_SetRenderDrawColor(renderer, 0x00, 0xFF, 0xFF, 0x00);
 	SDL_RenderClear(renderer);
+
+	/* Criação do chão */
+	SDL_SetRenderDrawColor(renderer, 0x00, 0xFF, 0x00, 0x00);
+	SDL_Rect ground = {0,170, 400,30};
+	SDL_RenderFillRect(renderer, &ground);
 
 	/* Criação do cabeça */
 	SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0x00, 0X00);
-	SDL_Rect rectangle = {175,20, 50,50};
-	SDL_RenderFillRect(renderer, &rectangle);
+	SDL_Rect head = {175,20, 50,50};
+	SDL_RenderFillRect(renderer, &head);
+
+	/* Olhos */
+	SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0x00);
+	SDL_RenderDrawPoint(renderer, 190, 40);
+	SDL_RenderDrawPoint(renderer, 210, 40);
+
+	/* Boca */
+	SDL_RenderDrawLine(renderer, 190,60, 210,60);
 
 	/* Criação do corpo */
-	SDL_SetRenderDrawColor(renderer, 0xFF, 0x00, 0x00, 0x00);
+	/* Tronco */
+	SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0x00);
 	SDL_RenderDrawLine(renderer, 200,70, 200,135);
 
-	/* Criação do ponto */
-	SDL_SetRenderDrawColor(renderer, 0x00, 0x00, 0x00, 0x00);
-	SDL_RenderDrawPoint(renderer, 200, 45);
-	
+	/* Pernas */
+	SDL_RenderDrawLine(renderer, 200,135, 180,170);
+	SDL_RenderDrawLine(renderer, 200,135, 220,170);
+
+	/* Braços */
+	SDL_RenderDrawLine(renderer, 200,102, 150,80);
+	SDL_RenderDrawLine(renderer, 200,102, 250,80);
+
 	SDL_RenderPresent(renderer);
 	SDL_Delay(5000);
 }
