@@ -35,7 +35,7 @@ int main(int argc, char* args[])
 	SDL_Rect ground = {0,170, 400,30};
 	SDL_RenderFillRect(renderer, &ground);
 
-	/* Criação do cabeça */
+	/* Criação da cabeça */
 	SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0x00, 0X00);
 	SDL_Rect head = {175,20, 50,50};
 	SDL_RenderFillRect(renderer, &head);
@@ -63,4 +63,10 @@ int main(int argc, char* args[])
 
 	SDL_RenderPresent(renderer);
 	SDL_Delay(5000);
+
+	/* Finalização */
+	SDL_DestroyRenderer(renderer);
+	SDL_DestroyWindow(window);
+	SDL_Quit();
+	return 0;
 }
