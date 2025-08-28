@@ -1,3 +1,5 @@
+/* A animação representa uma pessoa pousando no solo após pular de paraquedas */
+
 #include <stdio.h>
 #include <SDL2/SDL.h>
 #include <SDL2/SDL2_gfxPrimitives.h>
@@ -12,7 +14,7 @@ int main(int argc, char* args[])
     }
 
     /* Criação da janela e do renderizador */
-    SDL_Window* window = SDL_CreateWindow("1.2.2", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 700, 700, 0);
+    SDL_Window* window = SDL_CreateWindow("1.3.1", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 700, 700, 0);
     if (window == NULL)
     {
         printf("Erro ao criar janela!");
@@ -27,8 +29,9 @@ int main(int argc, char* args[])
     }
 
     /* Execução */
-    //while(true)
-    //{
+    int contador = 0;
+    while(contador < 261)
+    {
         /* Configuração do fundo */
         SDL_SetRenderDrawColor(renderer, 0xAD, 0xD8, 0xE6, 0x00);
         SDL_RenderClear(renderer);
@@ -37,26 +40,25 @@ int main(int argc, char* args[])
         boxColor(renderer, 0, 550, 700, 700, 0xFFB6ECBD);
 
         /* Criação do paraquedas */
-        lineColor(renderer, 290, 155, 260, 125, 0xFF000000); // Corda esquerda
-        lineColor(renderer, 410, 155, 440, 125, 0xFF000000); // Corda direita
+        lineColor(renderer, 290, 155+contador, 260, 125+contador, 0xFF000000); // Corda esquerda
+        lineColor(renderer, 410, 155+contador, 440, 125+contador, 0xFF000000); // Corda direita
+        filledEllipseColor(renderer, 350, 90+contador, 180, 50, 0xFF6169FF); // Velame
+        filledEllipseColor(renderer, 350, 73+contador, 160, 30, 0xFF4C50E2); // Velame (sombra)
 
 
         /* Criação da pessoa */
-        filledCircleColor(renderer, 350, 150, 30, 0xFF4B443B); // Cabeça
-        thickLineColor(renderer, 350, 180, 350, 230, 5, 0xFF4B443B); // Tronco
-        thickLineColor(renderer, 350, 230, 340, 290, 5, 0xFF4B443B); // Perna esquerda
-        thickLineColor(renderer, 350, 230, 360, 290, 5, 0xFF4B443B); // Perna direita
-        thickLineColor(renderer, 350, 205, 290, 155, 5, 0xFF4B443B); // Braço esquerdo
-        thickLineColor(renderer, 350, 205, 410, 155, 5, 0xFF4B443B); // Braço direito
+        filledCircleColor(renderer, 350, 150+contador, 30, 0xFF4B443B); // Cabeça
+        thickLineColor(renderer, 350, 180+contador, 350, 230+contador, 5, 0xFF4B443B); // Tronco
+        thickLineColor(renderer, 350, 230+contador, 340, 290+contador, 5, 0xFF4B443B); // Perna esquerda
+        thickLineColor(renderer, 350, 230+contador, 360, 290+contador, 5, 0xFF4B443B); // Perna direita
+        thickLineColor(renderer, 350, 205+contador, 290, 155+contador, 5, 0xFF4B443B); // Braço esquerdo
+        thickLineColor(renderer, 350, 205+contador, 410, 155+contador, 5, 0xFF4B443B); // Braço direito
 
-
-
+        /* Atualização da tela */
         SDL_RenderPresent(renderer);
-        SDL_Delay(5000);
-        // Delay para 10 pixels/s = 25
-
-        /* Verificação da posição da pessoa */
-    //}
+        SDL_Delay(25);
+        contador += 1;
+    }
 
     /* Finalização */
     SDL_DestroyRenderer(renderer);
