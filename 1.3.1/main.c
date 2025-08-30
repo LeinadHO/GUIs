@@ -30,7 +30,7 @@ int main(int argc, char* args[])
 
     /* Execução */
     int contador = 0;
-    while(contador < 261)
+    while(contador < 260)
     {
         /* Configuração do fundo */
         SDL_SetRenderDrawColor(renderer, 0xAD, 0xD8, 0xE6, 0x00);
@@ -56,7 +56,7 @@ int main(int argc, char* args[])
 
         /* Atualização da tela */
         SDL_RenderPresent(renderer);
-        SDL_Delay(25);
+        SDL_Delay(100);
         contador += 1;
     }
 
