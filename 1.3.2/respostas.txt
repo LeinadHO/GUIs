@@ -1,3 +1,0 @@
-1. O bug visual é que a tela "pisca" em branco a cada passo da animação, pois o primeiro RenderPresent() exibe apenas a tela em branco, sem o retângulo azul.
-
-2. O uso do "double buffering" fica evidente pois, a cada chamada do SDL_RenderPresent o conteúdo exibido na tela (front buffer) é atualizado com o que foi escrito e armazenado em outro ambiente antes de ser exibido (back buffer).
