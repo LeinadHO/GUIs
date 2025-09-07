@@ -1,5 +1,6 @@
 #include <SDL2/SDL.h>
 #include <stdio.h>
+#include "../1.5.2/AUX_WaitEventTimeoutCount.h"
 
 #define ALTURA 100
 #define LARGURA 200
@@ -40,7 +41,7 @@ int main (int argc, char* args[])
     SDL_Rect retangulo_mouse = {80,40, 10,10};
     int movimentoX = 2;
     int movimentoY = 2;
-    int espera = 33;
+    Uint32 espera = 16;
 
     // Loop de captura de eventos
     while (1) 
@@ -58,11 +59,9 @@ int main (int argc, char* args[])
 
         // Captura de eventos
         SDL_Event evt;
-        Uint32 antes = SDL_GetTicks();
-        int isevt = SDL_WaitEventTimeout(&evt, espera);
+        int isevt = AUX_WaitEventTimeoutCount(&evt, &espera);
         if (isevt) // Evento
         {
-            espera -= SDL_GetTicks() - antes;
             // Captura eventos de finalização do programa
             if (evt.type == SDL_QUIT) { 
                 SDL_DestroyRenderer(ren);
@@ -100,7 +99,7 @@ int main (int argc, char* args[])
 
         else // Timeout - Atualiza a posição do retângulo do tempo
         {   
-            espera = 33;
+            espera = 16;
             // Troca a direção de movimento do retângulo do tempo se tiver atingido um limite da janela
             switch (retangulo_tempo.x) {
                 case LARGURA-10:
@@ -110,7 +109,6 @@ int main (int argc, char* args[])
                     movimentoX = 2;
                     break;
             }
-
             switch (retangulo_tempo.y) {
                 case ALTURA-10:
                     movimentoY = -2;
