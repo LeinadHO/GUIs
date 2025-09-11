@@ -46,6 +46,7 @@ int main (int argc, char* args[])
     int retangulo_tempo_chegou = 0;
     int retangulo_teclado_chegou = 0;
     int retangulo_mouse_chegou = 0;
+    int vencedor = 0;
 
     // Loop de captura de eventos
     while (1) 
@@ -68,8 +69,8 @@ int main (int argc, char* args[])
         int isevt = AUX_WaitEventTimeoutCount(&evt, &espera);
         if (isevt) // Evento
         {
-            // Captura eventos de finalização do programa
-            if (evt.type == SDL_QUIT) { 
+            // Finaliza o programa quando captura um evento de fechamento (ALT+F4 ou clicar no [x] da janela) ou quando os três retângulos tiverem atingido a linha de chegada
+            if (evt.type == SDL_QUIT || (retangulo_teclado_chegou && retangulo_tempo_chegou && retangulo_mouse_chegou)) { 
                 SDL_DestroyRenderer(ren);
                 SDL_DestroyWindow(win);
                 SDL_Quit();
@@ -119,6 +120,32 @@ int main (int argc, char* args[])
         retangulo_teclado_chegou = RetanguloColidiu(&retangulo_teclado, &linha_chegada);
         retangulo_tempo_chegou = RetanguloColidiu(&retangulo_tempo, &linha_chegada);
         retangulo_mouse_chegou = RetanguloColidiu(&retangulo_mouse, &linha_chegada);
+
+        // Registra o primeiro retângulo a ter atingido a linha de chegada
+        if (vencedor == 0) {
+            if (retangulo_teclado_chegou) {
+                vencedor = 1;
+            }
+            else if (retangulo_tempo_chegou) {
+                vencedor = 2;
+            }
+            else if (retangulo_mouse_chegou) {
+                vencedor = 3;
+            }
+        }
+    }
+
+    // Informa o retângulo que chegou primeiro
+    switch (vencedor) {
+        case 1:
+            printf("O vencedor foi o retângulo movido pelo teclado!\n");
+            break;
+        case 2:
+            printf("O vencedor foi o retângulo movido pelo tempo!\n");
+            break;
+        case 3:
+            printf("O vencedor foi o retângulo movido pelo mouse!\n");
+            break;
     }
     return 0;
 }
