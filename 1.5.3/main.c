@@ -6,7 +6,7 @@
 #include <stdio.h>
 #include <SDL2/SDL.h> 
 #include <SDL2/SDL2_gfxPrimitives.h>
-#include "../1.5.2/AUX_WaitEventTimeoutCount.h"
+#include "../funcoes-externas/AUX_WaitEventTimeoutCount/AUX_WaitEventTimeoutCount.h"
 
 
 int main(int argc, char* args[]) 
@@ -18,11 +18,7 @@ int main(int argc, char* args[])
     } 
 
     /* Criação da janela e do renderizador */ 
-    SDL_Window* window = SDL_CreateWindow(
-        "1.3.1", 
-        SDL_WINDOWPOS_UNDEFINED, 
-        SDL_WINDOWPOS_UNDEFINED, 
-        700, 700, 0); 
+    SDL_Window* window = SDL_CreateWindow("1.5.3", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 700, 700, 0); 
     if (window == NULL) { 
         printf("Erro ao criar janela!"); 
         exit(0); 
