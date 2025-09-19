@@ -1,6 +1,7 @@
 /* BIBLIOTECAS */
 #include <stdio.h>
 #include <SDL2/SDL.h>
+#include <stdlib.h>
 #include "AUX_WaitEventTimeoutCount.h"
 #include "MultiplosCliques.h"
 
@@ -84,7 +85,7 @@ int Executador(SDL_Window* win, SDL_Renderer* ren) {
 
     // Declaração das variáveis que serão utilizadas durante a execução
     SDL_Event evt;
-    int isevt;
+    int isevt, mouseX_inicial, mouseY_inicial, mouseX_atual, mouseY_atual;
     int continuar_execucao = 1;
     int n = 0;
     Uint32 espera = 250;
@@ -108,8 +109,24 @@ int Executador(SDL_Window* win, SDL_Renderer* ren) {
 
             // Eventos de clique do mouse
             if (evt.type == SDL_MOUSEBUTTONDOWN && evt.button.button == SDL_BUTTON_LEFT) {
+                if (MultiplosCliques_Quantidade(&mc) < 0) {
+                    SDL_GetMouseState(&mouseX_inicial, &mouseY_inicial);
+                }
                 MultiplosCliques_Contador(&mc);
                 espera = 250;
+            }
+
+            // Eventos de movimento do mouse
+            if (evt.type == SDL_MOUSEMOTION) {
+                SDL_GetMouseState(&mouseX_atual, &mouseY_atual);
+                if (abs(mouseX_atual - mouseX_inicial) >= 5 || abs(mouseY_atual - mouseY_inicial) >= 5) {
+                    n = MultiplosCliques_Quantidade(&mc);
+                    if (n > 0) {
+                        MultiplosCliques_Reiniciador(&mc);
+                        MultiplosCliques_EmissorEventos(n);
+                        printf("Saiu porque mexeu\n");
+                    }
+                }  
             }
 
             // Eventos de usuário
@@ -118,15 +135,13 @@ int Executador(SDL_Window* win, SDL_Renderer* ren) {
                 continuar_execucao = 0;
             }
         }
-        else { // Trata o timeout (quando não houver eventos dentro do tempo limite)
+        else { // Emite o evento quando o tempo de timeout foi atingido
             n = MultiplosCliques_Quantidade(&mc);
-            MultiplosCliques_Reiniciador(&mc);
-            if (n == 1) {
-                printf("Apenas um clique na tela registrado!\n");
-            }
-            if (n >= 2) {
+            if (n > 0) {
+                MultiplosCliques_Reiniciador(&mc);
                 MultiplosCliques_EmissorEventos(n);
-            }
+                printf("Saiu porque acabou o tempo\n");
+            }  
         }
     }
 }
