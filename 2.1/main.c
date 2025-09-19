@@ -1,18 +1,19 @@
-/* Bibliotecas */
+/* BIBLIOTECAS */
 #include <stdio.h>
 #include <SDL2/SDL.h>
-#include "../funcoes-externas/MultiplosCliques/MultiplosCliques.h"
+#include "AUX_WaitEventTimeoutCount.h"
+#include "MultiplosCliques.h"
 
-/* Constantes */
+/* CONSTANTES */
 #define LARGURA 1280
 #define ALTURA 720
 
-/* Funções */
+/* DECLARAÇÃO DAS FUNÇÕES */
 int Inicializador(SDL_Window** win, SDL_Renderer** ren);
 int Executador(SDL_Window* win, SDL_Renderer* ren);
 int Finalizador(SDL_Window** win, SDL_Renderer** ren);
 
-/* Entry point do programa */
+/* PONTO DE ENTRADA DO PROGRAMA*/
 int main(int argc, char* argv[]) {
     // Chamada à função Inicializador() e o tratamento dos possíveis retornos associados
     SDL_Window* window = NULL;
@@ -53,7 +54,7 @@ int main(int argc, char* argv[]) {
     return 0;
 }
 
-/* Função de inicialização do programa */
+/* FUNÇÃO DE INICIALIZAÇÃO DO PROGRAMA E SEUS SUBSISTEMAS */
 int Inicializador(SDL_Window** win, SDL_Renderer** ren) {
     // Inicialização dos subsistemas do SDL
     int iniciou;
@@ -78,7 +79,7 @@ int Inicializador(SDL_Window** win, SDL_Renderer** ren) {
     return 1;
 }
 
-/* Função de execução do programa */
+/* FUNÇÃO DE EXECUÇÃO DO PROGRAMA (CONSTRUÇÃO DO FRAME, CAPTURA DE EVENTOS, ETC) */
 int Executador(SDL_Window* win, SDL_Renderer* ren) {
 
     // Declaração das variáveis que serão utilizadas durante a execução
@@ -91,15 +92,15 @@ int Executador(SDL_Window* win, SDL_Renderer* ren) {
 
     // Loop de execução do programa
     while (continuar_execucao) {
+
         // Construção e exibição do frame
         SDL_SetRenderDrawColor(ren, 0xFF, 0xFF, 0xFF, 0x00);
         SDL_RenderClear(ren);
         SDL_RenderPresent(ren);
         
-        // Captura de eventos
-        isevt = SDL_WaitEventTimeout(&evt, espera);
-        // Evento aconteceu
-        if (isevt) {
+        // Loop de captura de eventos
+        isevt = AUX_WaitEventTimeoutCount(&evt, &espera);
+        if (isevt) { // Trata os eventos esperados pelo programa
             // Eventos de finalização do loop de captura de eventos
             if (evt.type == SDL_QUIT) {
                 continuar_execucao = 0;
@@ -108,6 +109,7 @@ int Executador(SDL_Window* win, SDL_Renderer* ren) {
             // Eventos de clique do mouse
             if (evt.type == SDL_MOUSEBUTTONDOWN && evt.button.button == SDL_BUTTON_LEFT) {
                 MultiplosCliques_Contador(&mc);
+                espera = 250;
             }
 
             // Eventos de usuário
@@ -116,8 +118,7 @@ int Executador(SDL_Window* win, SDL_Renderer* ren) {
                 continuar_execucao = 0;
             }
         }
-        // Não teve evento - Timeout
-        else {
+        else { // Trata o timeout (quando não houver eventos dentro do tempo limite)
             n = MultiplosCliques_Quantidade(&mc);
             MultiplosCliques_Reiniciador(&mc);
             if (n > 0) {
@@ -130,7 +131,7 @@ int Executador(SDL_Window* win, SDL_Renderer* ren) {
     }
 }
 
-/* Função de finalização do programa */
+/* FUNÇÃO DE ENCERRAMENTO DO PROGRAMA E DESALOCAÇÃO DOS COMPONENTES USADOS DURANTE A EXECUÇÃO */
 int Finalizador(SDL_Window** win, SDL_Renderer** ren) {
     // Verifica se os componentes foram passados corretamente
     if (*win == NULL) {
