@@ -121,11 +121,11 @@ int Executador(SDL_Window* win, SDL_Renderer* ren) {
         else { // Trata o timeout (quando não houver eventos dentro do tempo limite)
             n = MultiplosCliques_Quantidade(&mc);
             MultiplosCliques_Reiniciador(&mc);
-            if (n > 0) {
-                SDL_Event evt_usuario;
-                evt_usuario.type = SDL_USEREVENT;
-                evt_usuario.user.code = n;
-                SDL_PushEvent(&evt_usuario);
+            if (n == 1) {
+                printf("Apenas um clique na tela registrado!\n");
+            }
+            if (n >= 2) {
+                MultiplosCliques_EmissorEventos(n);
             }
         }
     }
