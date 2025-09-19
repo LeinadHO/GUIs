@@ -17,4 +17,7 @@ int MultiplosCliques_Quantidade(MultiplosCliques* mc);
 // Função que reseta o contador de cliques
 void MultiplosCliques_Reiniciador(MultiplosCliques* mc);
 
+// Função que emite o evento relacionado aos múltiplos cliques
+void MultiplosCliques_EmissorEventos(int n);
+
 #endif
