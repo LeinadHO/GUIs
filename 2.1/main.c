@@ -1,6 +1,7 @@
 /* BIBLIOTECAS */
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include <SDL2/SDL.h>
 #include "AUX_WaitEventTimeoutCount.h"
 #include "MultiplosCliques.h"
@@ -17,6 +18,7 @@ int Finalizador(SDL_Window** win, SDL_Renderer** ren);
 /* PONTO DE ENTRADA DO PROGRAMA*/
 int main(int argc, char* argv[]) {
     // Chamada à função Inicializador() e o tratamento dos possíveis retornos associados
+    srand(time(NULL));
     SDL_Window* window = NULL;
     SDL_Renderer* renderer = NULL;
     int sucesso;
@@ -87,7 +89,7 @@ int Executador(SDL_Window* win, SDL_Renderer* ren) {
     int isevt, mouseX_atual, mouseY_atual;
     int continuar_execucao = 1;
     int r = 255, g = 255, b = 255;
-    int tons_adicionados = 0;
+    int proximo_tom = 0;
     MultiplosCliques mc = {0};
     MultiplosCliques_Iniciar(&mc, 250);
 
@@ -128,19 +130,19 @@ int Executador(SDL_Window* win, SDL_Renderer* ren) {
             // Eventos de usuário (Múltiplos Cliques)
             else if (evt.type == SDL_USEREVENT) {
                 int numero_cliques = evt.user.code;
-                switch (tons_adicionados) {
+                switch (proximo_tom) {
                     case 0:
-                        r = numero_cliques;
+                        r = abs((rand() * numero_cliques) % 256);
                         break;
                     case 1:
-                        g = numero_cliques;
+                        g = abs((rand() * numero_cliques) % 256);
                         break;
                     case 2:
-                        b = numero_cliques;
+                        b = abs((rand() * numero_cliques) % 256);
                         break;
                 }
                 printf("RGB: %d %d %d\n", r, g, b);
-                tons_adicionados = (tons_adicionados + 1) % 3;
+                proximo_tom = (proximo_tom + 1) % 3;
             }
         }
         else { // Emite o evento quando o tempo de timeout foi atingido
