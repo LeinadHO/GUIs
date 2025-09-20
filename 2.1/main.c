@@ -1,7 +1,7 @@
 /* BIBLIOTECAS */
 #include <stdio.h>
-#include <SDL2/SDL.h>
 #include <stdlib.h>
+#include <SDL2/SDL.h>
 #include "AUX_WaitEventTimeoutCount.h"
 #include "MultiplosCliques.h"
 
@@ -82,25 +82,24 @@ int Inicializador(SDL_Window** win, SDL_Renderer** ren) {
 
 /* FUNÇÃO DE EXECUÇÃO DO PROGRAMA (CONSTRUÇÃO DO FRAME, CAPTURA DE EVENTOS, ETC) */
 int Executador(SDL_Window* win, SDL_Renderer* ren) {
-
     // Declaração das variáveis que serão utilizadas durante a execução
     SDL_Event evt;
     int isevt, mouseX_atual, mouseY_atual;
     int continuar_execucao = 1;
-    int n = 0;
+    int r = 255, g = 255, b = 255;
+    int tons_adicionados = 0;
     MultiplosCliques mc = {0};
     MultiplosCliques_Iniciar(&mc, 250);
 
     // Loop de execução do programa
     while (continuar_execucao) {
         // Construção e exibição do frame
-        SDL_SetRenderDrawColor(ren, 0xFF, 0xFF, 0xFF, 0x00);
+        SDL_SetRenderDrawColor(ren, r, g, b, 0x00);
         SDL_RenderClear(ren);
         SDL_RenderPresent(ren);
         
         // Loop de captura de eventos
-        Uint32 espera = mc.espera;
-        isevt = AUX_WaitEventTimeoutCount(&evt, &espera);
+        isevt = AUX_WaitEventTimeoutCount(&evt, &mc.espera);
         if (isevt) { // Trata os eventos esperados pelo programa
             // Eventos de finalização do loop de captura de eventos
             if (evt.type == SDL_QUIT) {
@@ -118,27 +117,37 @@ int Executador(SDL_Window* win, SDL_Renderer* ren) {
                 SDL_GetMouseState(&mouseX_atual, &mouseY_atual);
                 int houve_movimento = MultiplosCliques_VerificarMovimento(&mc, mouseX_atual, mouseY_atual);
                 if (houve_movimento) {
-                    n = MultiplosCliques_QtdCliques(&mc);
-                    if (n > 0) {
+                    int numero_cliques = MultiplosCliques_QtdCliques(&mc);
+                    if (numero_cliques > 0) {
+                        MultiplosCliques_EmitirEventos(numero_cliques);
                         MultiplosCliques_ReiniciarContagem(&mc);
-                        MultiplosCliques_EmitirEventos(n);
-                        printf("Saiu porque mexeu\n");
                     }
                 }
             }
 
             // Eventos de usuário (Múltiplos Cliques)
             else if (evt.type == SDL_USEREVENT) {
-                printf("Você clicou %d vez(es) seguidas!\n", n);
-                continuar_execucao = 0;
+                int numero_cliques = evt.user.code;
+                switch (tons_adicionados) {
+                    case 0:
+                        r = numero_cliques;
+                        break;
+                    case 1:
+                        g = numero_cliques;
+                        break;
+                    case 2:
+                        b = numero_cliques;
+                        break;
+                }
+                printf("RGB: %d %d %d\n", r, g, b);
+                tons_adicionados = (tons_adicionados + 1) % 3;
             }
         }
         else { // Emite o evento quando o tempo de timeout foi atingido
-            n = MultiplosCliques_QtdCliques(&mc);
-            if (n > 0) {
+            int numero_cliques = MultiplosCliques_QtdCliques(&mc);
+            if (numero_cliques > 0) {
+                MultiplosCliques_EmitirEventos(numero_cliques);
                 MultiplosCliques_ReiniciarContagem(&mc);
-                MultiplosCliques_EmitirEventos(n);
-                printf("Saiu porque acabou o tempo\n");
             }  
         }
     }
