@@ -85,21 +85,21 @@ int Executador(SDL_Window* win, SDL_Renderer* ren) {
 
     // Declaração das variáveis que serão utilizadas durante a execução
     SDL_Event evt;
-    int isevt, mouseX_inicial, mouseY_inicial, mouseX_atual, mouseY_atual;
+    int isevt, mouseX_atual, mouseY_atual;
     int continuar_execucao = 1;
     int n = 0;
-    Uint32 espera = 250;
     MultiplosCliques mc = {0};
+    MultiplosCliques_Iniciar(&mc, 250);
 
     // Loop de execução do programa
     while (continuar_execucao) {
-
         // Construção e exibição do frame
         SDL_SetRenderDrawColor(ren, 0xFF, 0xFF, 0xFF, 0x00);
         SDL_RenderClear(ren);
         SDL_RenderPresent(ren);
         
         // Loop de captura de eventos
+        Uint32 espera = mc.espera;
         isevt = AUX_WaitEventTimeoutCount(&evt, &espera);
         if (isevt) { // Trata os eventos esperados pelo programa
             // Eventos de finalização do loop de captura de eventos
@@ -108,38 +108,36 @@ int Executador(SDL_Window* win, SDL_Renderer* ren) {
             }
 
             // Eventos de clique do mouse
-            if (evt.type == SDL_MOUSEBUTTONDOWN && evt.button.button == SDL_BUTTON_LEFT) {
-                if (MultiplosCliques_Quantidade(&mc) < 0) {
-                    SDL_GetMouseState(&mouseX_inicial, &mouseY_inicial);
-                }
-                MultiplosCliques_Contador(&mc);
-                espera = 250;
+            else if (evt.type == SDL_MOUSEBUTTONDOWN && evt.button.button == SDL_BUTTON_LEFT) {
+                SDL_GetMouseState(&mouseX_atual, &mouseY_atual);
+                MultiplosCliques_ContarClique(&mc, mouseX_atual, mouseY_atual);
             }
 
             // Eventos de movimento do mouse
-            if (evt.type == SDL_MOUSEMOTION) {
+            else if (evt.type == SDL_MOUSEMOTION) {
                 SDL_GetMouseState(&mouseX_atual, &mouseY_atual);
-                if (abs(mouseX_atual - mouseX_inicial) >= 5 || abs(mouseY_atual - mouseY_inicial) >= 5) {
-                    n = MultiplosCliques_Quantidade(&mc);
+                int houve_movimento = MultiplosCliques_VerificarMovimento(&mc, mouseX_atual, mouseY_atual);
+                if (houve_movimento) {
+                    n = MultiplosCliques_QtdCliques(&mc);
                     if (n > 0) {
-                        MultiplosCliques_Reiniciador(&mc);
-                        MultiplosCliques_EmissorEventos(n);
+                        MultiplosCliques_ReiniciarContagem(&mc);
+                        MultiplosCliques_EmitirEventos(n);
                         printf("Saiu porque mexeu\n");
                     }
-                }  
+                }
             }
 
             // Eventos de usuário
-            if (evt.type == SDL_USEREVENT) {
+            else if (evt.type == SDL_USEREVENT) {
                 printf("Você clicou %d vez(es) seguidas!\n", n);
                 continuar_execucao = 0;
             }
         }
         else { // Emite o evento quando o tempo de timeout foi atingido
-            n = MultiplosCliques_Quantidade(&mc);
+            n = MultiplosCliques_QtdCliques(&mc);
             if (n > 0) {
-                MultiplosCliques_Reiniciador(&mc);
-                MultiplosCliques_EmissorEventos(n);
+                MultiplosCliques_ReiniciarContagem(&mc);
+                MultiplosCliques_EmitirEventos(n);
                 printf("Saiu porque acabou o tempo\n");
             }  
         }
