@@ -17,7 +17,7 @@ void MultiplosCliques_Iniciar(MultiplosCliques* mc, Uint32 tempo);
 void MultiplosCliques_MudarEspera(MultiplosCliques* mc, Uint32 tempo);
 
 // Função que atualiza a quantidade de cliques dados, se recebidos dentro do limite de tempo definido
-void MultiplosCliques_ContarClique(MultiplosCliques* mc, int mouseX_atual, int mouseY_atual);
+void MultiplosCliques_ContarClique(MultiplosCliques* mc, int mouseX_atual, int mouseY_atual, int tempo);
 
 // Função que retona a quantidade de cliques dados no período definido
 int MultiplosCliques_QtdCliques(MultiplosCliques* mc);

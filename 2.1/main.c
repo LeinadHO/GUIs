@@ -110,7 +110,7 @@ int Executador(SDL_Window* win, SDL_Renderer* ren) {
             // Eventos de clique do mouse
             else if (evt.type == SDL_MOUSEBUTTONDOWN && evt.button.button == SDL_BUTTON_LEFT) {
                 SDL_GetMouseState(&mouseX_atual, &mouseY_atual);
-                MultiplosCliques_ContarClique(&mc, mouseX_atual, mouseY_atual);
+                MultiplosCliques_ContarClique(&mc, mouseX_atual, mouseY_atual, 250);
             }
 
             // Eventos de movimento do mouse
@@ -127,7 +127,7 @@ int Executador(SDL_Window* win, SDL_Renderer* ren) {
                 }
             }
 
-            // Eventos de usuário
+            // Eventos de usuário (Múltiplos Cliques)
             else if (evt.type == SDL_USEREVENT) {
                 printf("Você clicou %d vez(es) seguidas!\n", n);
                 continuar_execucao = 0;

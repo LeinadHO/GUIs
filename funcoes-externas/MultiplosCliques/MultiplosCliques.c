@@ -14,13 +14,13 @@ void MultiplosCliques_MudarEspera(MultiplosCliques* mc, Uint32 tempo){
 
 // Adiciona 1 ao contador sempre que um clique é registrado dentro do tempo limite
 // Se for o primeiro clique, também registra a posição do mouse no momento da captura
-void MultiplosCliques_ContarClique(MultiplosCliques* mc, int mouseX_atual, int mouseY_atual) {
+void MultiplosCliques_ContarClique(MultiplosCliques* mc, int mouseX_atual, int mouseY_atual, int tempo) {
     if (mc->qtd_cliques == 0) {
         mc->mouseX_inicial = mouseX_atual;
         mc->mouseY_inicial = mouseY_atual;
     }
     mc->qtd_cliques += 1;
-    mc->espera = 250;
+    mc->espera = tempo;
 }
 
 int MultiplosCliques_QtdCliques(MultiplosCliques* mc) {
