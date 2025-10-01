@@ -1,8 +1,11 @@
 #include <stdio.h>
 #include <SDL2/SDL.h>
+#include "AUX_WaitEventTimeoutCount.h"
 
-#define LARGURA 600
-#define ALTURA 300
+#define LARGURA_JANELA 800
+#define ALTURA_JANELA 400
+#define LARGURA_RECT 70
+#define ALTURA_RECT 70
 
 int InicializaPrograma(SDL_Window** win, SDL_Renderer** ren);
 void ExecutaPrograma(SDL_Window* win, SDL_Renderer* ren);
@@ -29,7 +32,6 @@ int main(int argc, char* argv[]) {
             printf("Erro ao criar o renderizador!\n");
             return sucessoInicio;
     }
-    return 0;
 
     // Chamada à função 'ExecutaPrograma()'
     ExecutaPrograma(window, renderer);
@@ -48,6 +50,7 @@ int main(int argc, char* argv[]) {
             printf("Renderizador passado é inválido!\n");
             return sucessoFim;
     }
+
     return 0;
 }
 
@@ -61,7 +64,7 @@ int InicializaPrograma(SDL_Window** win, SDL_Renderer** ren) {
     }
 
     // Criação da janela
-    *win = SDL_CreateWindow("2.1", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, LARGURA, ALTURA, 0);
+    *win = SDL_CreateWindow("2.2", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, LARGURA_JANELA, ALTURA_JANELA, 0);
     if (*win == NULL) {
         return -2;
     }
@@ -77,7 +80,34 @@ int InicializaPrograma(SDL_Window** win, SDL_Renderer** ren) {
 }
 
 void ExecutaPrograma(SDL_Window* win, SDL_Renderer* ren) {
-    printf("TUDO FUNCIONANDO!\n");
+
+    /* VARIÁVEIS DA EXECUÇÃO */
+    SDL_Rect retangulo = {(LARGURA_JANELA/2)-40, (ALTURA_JANELA/2)-50, LARGURA_RECT, ALTURA_RECT};
+    SDL_Event evt;
+    Uint32 tempo = 16;
+    int continuarExecucao = 1;
+    int isevt;
+    
+    while (continuarExecucao) {
+
+        /* CONSTRUÇÃO DO FRAME */
+        SDL_SetRenderDrawColor(ren, 255, 255, 255, 0);
+        SDL_RenderClear(ren);
+
+        SDL_SetRenderDrawColor(ren, 255, 0, 255, 0);
+        SDL_RenderFillRect(ren, &retangulo);
+        SDL_RenderPresent(ren);
+
+        /* CAPTURA DE EVENTOS */
+        isevt = AUX_WaitEventTimeoutCount(&evt, &tempo);
+        if (isevt) {
+            if (evt.type == SDL_QUIT) {
+                continuarExecucao = 0;
+            }
+        } else {
+            tempo = 16;
+        }
+    }
 }
 
 int FinalizaPrograma(SDL_Window** win, SDL_Renderer** ren) {
