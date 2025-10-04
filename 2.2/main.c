@@ -2,10 +2,8 @@
 #include <SDL2/SDL.h>
 #include "AUX_WaitEventTimeoutCount.h"
 
-#define LARGURA_JANELA 800
-#define ALTURA_JANELA 400
-#define LARGURA_RECT 70
-#define ALTURA_RECT 70
+#define LARGURA_JANELA 600
+#define ALTURA_JANELA 300
 
 int InicializaPrograma(SDL_Window** win, SDL_Renderer** ren);
 void ExecutaPrograma(SDL_Window* win, SDL_Renderer* ren);
@@ -82,12 +80,19 @@ int InicializaPrograma(SDL_Window** win, SDL_Renderer** ren) {
 void ExecutaPrograma(SDL_Window* win, SDL_Renderer* ren) {
 
     /* VARIÁVEIS DA EXECUÇÃO */
-    SDL_Rect retangulo = {(LARGURA_JANELA/2)-40, (ALTURA_JANELA/2)-50, LARGURA_RECT, ALTURA_RECT};
+    int posIncialRectX = (LARGURA_JANELA/2)-40;
+    int posInicialRectY = (ALTURA_JANELA/2)-50;
+    SDL_Rect retangulo = {posIncialRectX, posInicialRectY, 70, 70};
     SDL_Event evt;
     Uint32 tempo = 16;
     int continuarExecucao = 1;
     int isevt;
+    int mouseX, mouseY;
+    int difCliqueX, difCliqueY;
+    int mousePressionadoNoRetangulo = 0;
+    int retanguloMovendo = 0;
     
+    /* LOOP DE EXECUÇÃO */
     while (continuarExecucao) {
 
         /* CONSTRUÇÃO DO FRAME */
@@ -101,8 +106,50 @@ void ExecutaPrograma(SDL_Window* win, SDL_Renderer* ren) {
         /* CAPTURA DE EVENTOS */
         isevt = AUX_WaitEventTimeoutCount(&evt, &tempo);
         if (isevt) {
-            if (evt.type == SDL_QUIT) {
+            if (evt.type == SDL_QUIT) { // Fechamento do programa
                 continuarExecucao = 0;
+            }
+
+            if (evt.type == SDL_MOUSEBUTTONDOWN) { // Verifica se o botão do mouse foi pressionado em cima do retângulo
+                SDL_GetMouseState(&mouseX, &mouseY);
+                SDL_Point mousePos = {mouseX, mouseY};
+                if (SDL_PointInRect(&mousePos, &retangulo)) {
+                    mousePressionadoNoRetangulo = 1;
+                    difCliqueX = mouseX - retangulo.x;
+                    difCliqueY = mouseY - retangulo.y;
+                }
+            }
+
+            if (evt.type == SDL_MOUSEMOTION) { // Verifica se o mouse foi movido após o botão do mouse ser pressionado com o cursor em cima do retângulo
+                if (mousePressionadoNoRetangulo) {
+                    retanguloMovendo = 1;
+                    SDL_GetMouseState(&mouseX, &mouseY);
+                    retangulo.x = mouseX - difCliqueX;
+                    retangulo.y = mouseY - difCliqueY;
+                    printf("Movendo o retângulo!\n");
+                }
+            }
+
+            if (evt.type == SDL_MOUSEBUTTONUP) { // Verifica se o botão do mouse foi liberado após o botão do mouse ser pressionado com o cursor em cima do retângulo
+                if (mousePressionadoNoRetangulo) {
+                    if (!retanguloMovendo) {
+                        printf("O retângulo foi clicado!\n");
+                    } else {
+                        printf("O retângulo foi movido!\n");
+                        retanguloMovendo = 0;
+                    }
+                    mousePressionadoNoRetangulo = 0;
+                }
+            }
+
+            if (evt.type == SDL_KEYDOWN && evt.key.keysym.sym == SDLK_ESCAPE) { // Verifica se a tecla "Esc" foi pressionada durante o arrasto do retângulo
+                if (retanguloMovendo) {
+                    mousePressionadoNoRetangulo = 0;
+                    retanguloMovendo = 0;
+                    retangulo.x = posIncialRectX;
+                    retangulo.y = posInicialRectY;
+                    printf("Ações canceladas!\n");
+                }
             }
         } else {
             tempo = 16;
